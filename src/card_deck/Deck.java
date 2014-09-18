@@ -4,13 +4,14 @@ package card_deck;
  * A simple Deck class with definitions for commonly used functions
  * 
  * Date Created:		9/15/2014
- * Date Last Modified:	9/16/2014
+ * Date Last Modified:	9/17/2014
  * 
  * @author Matthew T. Farrington
  */
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Random;
 
 public class Deck {
@@ -104,18 +105,19 @@ public class Deck {
 		}
 	}
 	
-	//IMPLEMENT ITERATORS AND USE THEM TO REMOVE THE CARDS
-	
-	
 	/**
 	 * Removes the first instance of a given card
 	 * @param card Card to remove
 	 */
 	public void removeCard(Card card){
-		if(contains(card)){
-			cards.remove(getPosition(card));
+		Iterator<Card> cardItr = cards.iterator();
+		while(cardItr.hasNext()){
+			if(cardItr.next().equals(card)){
+				cardItr.remove();
+				return;
 			}
 		}
+	}
 	
 	/**
 	 * Removes all instances of a given card from the deck
@@ -126,23 +128,23 @@ public class Deck {
 	}
 	
 	/**
-	 * Removes all instances of a given card value from the deck
-	 * @param value Value of card to remove (e.g 7 or 13)
+	 * Removes all instances of a given card number value from the deck
+	 * @param numValue int value of card to remove (e.g 7 or 13)
 	 */
-	public void removeAllValue(int value){
-		removeCard(new Card(value,"Spades"));
-		removeCard(new Card(value,"Clubs"));
-		removeCard(new Card(value,"Hearts"));
-		removeCard(new Card(value,"Diamonds"));
+	public void removeAllNumber(int numValue){
+		Iterator<Card> cardItr = cards.iterator();
+		while(cardItr.hasNext()){
+			if(cardItr.next().getNumber() == numValue) cardItr.remove();
+		}
 	}
 	
 	/**
 	 * Removes all of the face cards from the deck
 	 */
 	public void removeFaceCards(){
-		for(Card card: cards){
-			System.out.println(card.getCode());
-			if(card.isFaceCard()) removeCard(card);
+		Iterator<Card> cardItr = cards.iterator();
+		while(cardItr.hasNext()){
+			if(cardItr.next().isFaceCard()) cardItr.remove();
 		}
 	}
 	
@@ -151,18 +153,20 @@ public class Deck {
 	 * @param suit Suit to remove from deck
 	 */
 	public void removeAllSuit(String suit){
-		for(Card card: cards){
-			if(card.getSuit().equals(suit)) cards.remove(card);
+		Iterator<Card> cardItr = cards.iterator();
+		while(cardItr.hasNext()){
+			if(cardItr.next().getSuit() == suit) cardItr.remove();
 		}
 	}
 	
 	/**
-	 * Removes all instances of a given card name from the deck
-	 * @param name Name of card type to remove (e.g '7' or 'Queen')
+	 * Removes all instances of a given card value from the deck
+	 * @param value Value of card type to remove (e.g '7' or 'Queen')
 	 */
-	public void removeAllValue(String name){
-		for(Card card: cards){
-			if(card.getName().equals(name)) cards.remove(card);
+	public void removeAllValue(String value){
+		Iterator<Card> cardItr = cards.iterator();
+		while(cardItr.hasNext()){
+			if(cardItr.next().getValue() == value) cardItr.remove();
 		}
 	}
 	
@@ -171,8 +175,9 @@ public class Deck {
 	 * @param color Color to remove from deck
 	 */
 	public void removeAllColor(String color){
-		for(Card card: cards){
-			if(card.getColor().equals(color)) cards.remove(card);
+		Iterator<Card> cardItr = cards.iterator();
+		while(cardItr.hasNext()){
+			if(cardItr.next().getColor() == color) cardItr.remove();
 		}
 	}
 	
@@ -195,7 +200,7 @@ public class Deck {
 	 * @return
 	 */
 	public float trueCount(int decksInShoe){
-		return this.runningCount()/decksInShoe;
+		return (float)runningCount()/decksInShoe;
 	}
 	
 	/**
@@ -220,20 +225,30 @@ public class Deck {
 	 * Generates an array of Decks representing "hands" for a game of cards
 	 * @param players	Number of players being dealt cards
 	 * @param cardsPerHand	Number of cards to be dealt to each player
-	 * @return	ArrayList of Decks representing "hands" for a game of cards
+	 * @return	ArrayList<Deck> representing "hands" for a game of cards
 	 */
-	public ArrayList<Deck> deal(int players, int cardsPerHand){
-				
-		Deck[] hands = new Deck[players];
+	public ArrayList<Deck> deal(int numPlayers, int cardsPerHand){
 		
-		//Loop through, adding cards to each player's hands
-		while(!cards.isEmpty()){
-			for(;cardsPerHand>0;cardsPerHand--)
-				for(Deck playerHand: hands){
-					playerHand.insertCard(cards.get(0),0);
+		ArrayList<Deck> hands = new ArrayList<Deck>();
+		
+		//Add the first card to each players hand
+		if(numPlayers>0){
+			for(int i=numPlayers; i>0 && !cards.isEmpty(); i--){
+				ArrayList<Card> newCards = new ArrayList<Card>();
+				newCards.add(draw());	
+				hands.add(new Deck(newCards));
+				}
+			}
+		
+		//Add additional cards to the hand
+		if(numPlayers>1){
+			for(Deck hand: hands){
+				for(int i=cardsPerHand-1; i>0 && !cards.isEmpty(); i--){
+					hand.insertCard(draw(),0);
+				}
 			}
 		}
-		return new ArrayList<Deck>(Arrays.asList(hands));
+		return hands;
 	}
 	
 	/**
@@ -267,12 +282,18 @@ public class Deck {
 	 * Prints the card code of each card in the deck
 	 */
 	public void printDeck(){
-		for(Card card: cards) System.out.print(card.getCode()+"|");
+		for(Card card: cards){
+			System.out.print(card.getCode()+"|");
+		}
+		System.out.println("\n");
 	}
 	/**
 	 * Prints the full name (value and suit) of each card in the deck
 	 */
 	public void printDeckLong(){
-		for(Card card: cards) System.out.println(card.getName());
+		for(Card card: cards){
+			System.out.println(card.getName());
+		}
+		System.out.print("\n");
 	}
 }

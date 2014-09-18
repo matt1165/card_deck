@@ -1,10 +1,12 @@
 package card_deck;
 
+import java.util.ArrayList;
+
 /**
  * A series of tests to demonstrate the functionality of the Deck class
  * 
  * Date Created:			9/15/2014
- * Date Last Modified:		9/16/2014
+ * Date Last Modified:		9/17/2014
  * 
  * @author Matthew T. Farrington
  */
@@ -86,26 +88,50 @@ public class Test_Deck {
 		/*
 		//Remove all 6's from the deck
 		Deck myDeck = new Deck();
-		myDeck.removeAllValue(6);
+		myDeck.removeAllNumber(6);
 		myDeck.printDeck();
 		*/
 		
+		/*
 		//Remove all of the face cards and Jokers
 		Deck myDeck = new Deck();
 		myDeck.removeFaceCards();
-		//myDeck.removeAllInstances(new Card(0,"Joker"));
+		myDeck.removeAllSuit("Joker");
 		myDeck.printDeck();
-		
-		/*
-		//Remove all of the remaining spades
-		myDeck.removeAllSuit("Spades");
-		myDeck.printDeck();
-		
-		*
 		*/
 		
+		/*
+		//Remove all of the Spades and all other red cards (leaving only Clubs and Jokers)
+		Deck myDeck = new Deck();
+		myDeck.removeAllSuit("Spades");
+		myDeck.removeAllColor("Red");
+		myDeck.printDeck();
+		*/
+		
+		/*
+		//Remove the 5 of diamonds, insert back in random position, print the position
+		Deck myDeck = new Deck();
+		Card card = new Card(5,"Diamonds");
+		myDeck.removeCard(card);
+		myDeck.instertCard(card);
+		System.out.println("Position: " + myDeck.getPosition(card));
+		*/
+		
+		/*
+		//Deal and print 5 hands of 2 cards for a game of Blackjack
+		//After the cards are delt find the Running Count and the True Count of the
+		//remaining cards in the deck
+		int decksInShoe = 2;
+		Deck myDeck = new Deck();
+		myDeck.removeAllSuit("Joker");
+		myDeck.shuffle();
+		ArrayList<Deck> handsArray = myDeck.deal(5,2);
+		for(Deck hand: handsArray){
+			hand.printDeckLong();
+		}
+		
+		System.out.println("Running Count: " + myDeck.runningCount());
+		System.out.println("True Count: " + myDeck.trueCount(decksInShoe));
+		*/
 	}
-	
-	
-	
 }

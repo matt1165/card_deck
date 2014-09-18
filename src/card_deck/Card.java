@@ -4,11 +4,11 @@ package card_deck;
  * A simple deck class with definitions for common methods
  * 
  * Date Created:			9/15/2014
- * Date Last Modified:		9/16/2014
+ * Date Last Modified:		9/17/2014
  * 
  * @author user
  */
-class Card {
+public class Card {
 
 	private int number;
 	private String suit;
