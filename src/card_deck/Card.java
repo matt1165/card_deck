@@ -6,7 +6,7 @@ package card_deck;
  * Date Created:			9/15/2014
  * Date Last Modified:		9/17/2014
  * 
- * @author user
+ * @author Matthew T. Farrington
  */
 public class Card {
 
